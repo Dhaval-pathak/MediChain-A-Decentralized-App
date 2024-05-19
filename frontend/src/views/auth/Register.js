@@ -26,7 +26,8 @@ export default function Register() {
       const result = await registerUser({ username, email, password, role });
       console.log("Registration result:", result);
       setSuccessMessage("Registration successful!");
-      history.push('/admin');
+      alert("Registration successful! Please Login now")
+      history.push('/auth/login');
     } catch (error) {
       console.log("Registration failed", error);
       setErrorMessage(error.response?.data?.error || "An error occurred during registration");

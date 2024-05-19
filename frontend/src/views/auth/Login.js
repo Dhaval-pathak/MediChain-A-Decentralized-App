@@ -26,9 +26,9 @@ export default function Login() {
       if (response.role === 'doctor') {
         history.push('/admin/dashboard');
       } else if (response.role === 'patient') {
-        history.push(`/patient-dashboard/${response.id}`);
+        history.push(`/patient/${response.id}`);
       } else if (response.role === 'insurance') {
-        history.push('/insurance-dashboard');
+        history.push('/insurance');
       } else {
         history.push('/error-page');
       }
