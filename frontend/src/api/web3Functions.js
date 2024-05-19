@@ -1137,7 +1137,8 @@ const contractABI = [
     "constant": true
   }
 ];
-const contractAddress = '0x45c2Dac0efF76aC67b16E761795ecd3B12f11465';
+
+const contractAddress = '0x2189F18418f968EEC3B7B9Fc647cAcF0D9BF9345';
 
 
 export async function createMedicalBillOnChain(patientId, details, amount, hospitalId) {
@@ -1218,6 +1219,19 @@ export async function assignInsurancePolicy(patientId, insuranceCompany, policyI
   const contract = new web3.eth.Contract(contractABI, contractAddress);
 
   await contract.methods.assignInsurancePolicy(patientId, insuranceCompany, policyId).send({ from: accounts[0] });
+}
+
+export async function getAllPatientsByHospital(_hospitalId){
+  try {
+    const web3 = await initWeb3();
+    const contract = new web3.eth.Contract(contractABI, contractAddress);
+    const records = await contract.methods.getAllPatientsByHospital(_hospitalId).call();
+    console.log(records);
+    return records;
+} catch (error) {
+    console.error('Error fetching all medical records:', error);
+    throw error;
+}
 }
 
 

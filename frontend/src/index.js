@@ -7,6 +7,8 @@ import "assets/styles/tailwind.css";
 
 import Admin from "layouts/Admin.js";
 import Auth from "layouts/Auth.js";
+import Patient from "layouts/Patient";
+import Insurance from "layouts/Insurance";
 
 ReactDOM.render(
   <BrowserRouter>
@@ -14,7 +16,8 @@ ReactDOM.render(
       
       <Route path="/admin" component={Admin} />
       <Route path="/auth" component={Auth} />
-    
+      <Route path="/patient" component={Patient} />
+      <Route path="/insurance" component={Insurance} />
       <Route path="/" exact component={Auth} />
       
       <Redirect from="*" to="/" />
