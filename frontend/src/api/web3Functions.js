@@ -1159,7 +1159,7 @@ export async function registerHospital(hospitalName, doctorList) {
   const doctorListArray = Array.isArray(doctorList) ? doctorList : [doctorList];
   console.log(doctorListArray)
 
-  await contract.methods.registerHospital(hospitalName, doctorListArray).send({ from: accounts[0] });
+  await contract.methods.registerInsuranceCompany(hospitalName, doctorListArray).send({ from: accounts[0] });
 }
 
 // Insurance Company Registration
@@ -1174,7 +1174,6 @@ export async function registerInsuranceCompany(networkHospitals, details) {
 // Policy Registration
 export async function createPolicy(
   description,
-  insuranceCompany,
   isPolicyCashless,
   isPolicyReimbursement,
   sumAssured,
@@ -1186,11 +1185,12 @@ export async function createPolicy(
   const web3 = await initWeb3();
   const accounts = await web3.eth.getAccounts();
   const contract = new web3.eth.Contract(contractABI, contractAddress);
+  const insuranceCompanyAddress = accounts[0];
 
   await contract.methods
     .createPolicy(
       description,
-      insuranceCompany,
+      insuranceCompanyAddress,
       isPolicyCashless,
       isPolicyReimbursement,
       sumAssured,
@@ -1207,6 +1207,7 @@ export async function registerPatient(hospitalId, name, age, otherDetails, patie
   const web3 = await initWeb3();
   const accounts = await web3.eth.getAccounts();
   const contract = new web3.eth.Contract(contractABI, contractAddress);
+  console.log(hospitalId, name, age, otherDetails, patientAddress)
 
   await contract.methods.registerPatient(hospitalId, name, age, otherDetails, patientAddress).send({ from: accounts[0] });
 }
@@ -1218,6 +1219,21 @@ export async function assignInsurancePolicy(patientId, insuranceCompany, policyI
   const contract = new web3.eth.Contract(contractABI, contractAddress);
 
   await contract.methods.assignInsurancePolicy(patientId, insuranceCompany, policyId).send({ from: accounts[0] });
+}
+
+
+
+export async function getAllPatientsByHospital(_hospitalId){
+  try {
+    const web3 = await initWeb3();
+    const contract = new web3.eth.Contract(contractABI, contractAddress);
+    const records = await contract.methods.getAllPatientsByHospital(_hospitalId).call();
+    console.log(records);
+    return records;
+} catch (error) {
+    console.error('Error fetching all medical records:', error);
+    throw error;
+}
 }
 
 

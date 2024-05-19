@@ -2,9 +2,9 @@ import {React,useState} from "react";
 
 // components
 
-import CardSettings from "components/Cards/CardSettings.js";
+// import CardSettings from "components/Cards/CardSettings.js";
 import CardProfile from "components/Cards/CardProfile.js";
-import {registerHospital} from "../../api/web3Functions"
+// import {registerHospital} from "../../api/web3Functions"
 export default function Settings() {
 
   
@@ -17,7 +17,7 @@ export default function Settings() {
     const handleSubmit = async (e) => {
       e.preventDefault();
       try {
-        await registerHospital(details, details);
+        // await registerHospital(details, details);
         console.log('Medical bill created successfully');
         // Reset form fields or perform any other necessary actions
         setPatientId('');
@@ -33,14 +33,12 @@ export default function Settings() {
     <>
       <div className="flex flex-wrap">
         <div className="w-full lg:w-8/12 px-4">
-          <CardSettings />
+          {/* <CardSettings /> */}
         </div>
         <div className="w-full lg:w-4/12 px-4">
           <CardProfile />
         </div>
       </div>
-
-
  
       <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
         <div className="rounded-t bg-white mb-0 px-6 py-6">
