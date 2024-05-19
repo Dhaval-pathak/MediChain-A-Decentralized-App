@@ -9,7 +9,7 @@ import HeaderStats from "components/Headers/HeaderStats.js";
 
 import Dashboard from "views/admin/Dashboard.js";
 import AddPatient from "views/admin/AddPatient";
-import ViewPatientDetails from "views/insurance/ViewPatientDetails";
+import ViewPatientDetails from "views/admin/ViewPatientDetails";
 import DoctorSidebar from "views/admin/components/DoctorSidebar";
 import DoctorNavbar from "views/admin/components/DoctorNavbar";
 
