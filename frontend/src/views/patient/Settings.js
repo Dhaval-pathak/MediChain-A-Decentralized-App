@@ -4,7 +4,7 @@ import {React,useState} from "react";
 
 import CardSettings from "components/Cards/CardSettings.js";
 import CardProfile from "components/Cards/CardProfile.js";
-import {registerHospital} from "../../api/web3Functions"
+// import {registerHospital} from "../../api/web3Functions"
 export default function Settings() {
 
   
@@ -17,7 +17,7 @@ export default function Settings() {
     const handleSubmit = async (e) => {
       e.preventDefault();
       try {
-        await registerHospital(details, details);
+        // await registerHospital(details, details);
         console.log('Medical bill created successfully');
         // Reset form fields or perform any other necessary actions
         setPatientId('');
