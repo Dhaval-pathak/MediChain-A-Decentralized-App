@@ -22,6 +22,7 @@ export default function Login() {
     event.preventDefault();
     try {
       const response = await loginUser({ username, password });
+      const id = response.id
       console.log('Login successful:', response);
       if (response.role === 'doctor') {
         history.push('/admin/dashboard');

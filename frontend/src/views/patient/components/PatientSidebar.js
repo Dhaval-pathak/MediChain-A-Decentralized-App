@@ -2,11 +2,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-
-import NotificationDropdown from "components/Dropdowns/TableDropdown.js";
+import NotificationDropdown from "components/Dropdowns/NotificationDropdown.js";
 import UserDropdown from "components/Dropdowns/UserDropdown.js";
 
-export default function DoctorSidebar() {
+export default function PatientSidebar(params) {
+  const id = params.id;
   const [collapseShow, setCollapseShow] = React.useState("hidden");
   return (
     <>
@@ -71,9 +71,8 @@ export default function DoctorSidebar() {
                 <input
                   type="text"
                   placeholder="Search"
-
-                  className="border-0 px-3 py-2 h-12 border-solid  border-blueGray-500 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-base leading-snug shadow-none outline-none focus:outline-none w-full font-normal"
-               />
+                  className="px-3 py-2 h-12 border border-solid  border-blueGray-500 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-base leading-snug shadow-none outline-none focus:outline-none w-full font-normal"
+                />
               </div>
             </form>
 
@@ -81,7 +80,7 @@ export default function DoctorSidebar() {
             <hr className="my-4 md:min-w-full" />
             {/* Heading */}
             <h6 className="md:min-w-full text-blueGray-500 text-xs uppercase font-bold block pt-1 pb-4 no-underline">
-              Hospital 
+              Patient 
             </h6>
             {/* Navigation */}
 
@@ -90,17 +89,16 @@ export default function DoctorSidebar() {
                 <Link
                   className={
                     "text-xs uppercase py-3 font-bold block " +
-
-                    (window.location.href.indexOf("/insurance/dashboard") !== -1
-                                        ? "text-lightBlue-500 hover:text-lightBlue-600"
+                    (window.location.href.indexOf(`/patient/${id}/dashboard`) !== -1
+                      ? "text-lightBlue-500 hover:text-lightBlue-600"
                       : "text-blueGray-700 hover:text-blueGray-500")
                   }
-                  to="/admin/dashboard"
+                  to={`/patient/${id}/dashboard`}
                 >
                   <i
                     className={
                       "fas fa-tv mr-2 text-sm " +
-                      (window.location.href.indexOf("/admin/dashboard") !== -1
+                      (window.location.href.indexOf(`/patient/${id}/dashboard`) !== -1
                         ? "opacity-75"
                         : "text-blueGray-300")
                     }
@@ -113,45 +111,45 @@ export default function DoctorSidebar() {
                 <Link
                   className={
                     "text-xs uppercase py-3 font-bold block " +
-                    (window.location.href.indexOf("/admin/add") !== -1
+                    (window.location.href.indexOf(`/patient/${id}/settings`) !== -1
                       ? "text-lightBlue-500 hover:text-lightBlue-600"
                       : "text-blueGray-700 hover:text-blueGray-500")
                   }
-                  to="/admin/add"
+                  to={`/patient/${id}/settings`}
                 >
                   <i
                     className={
                       "fas fa-tools mr-2 text-sm " +
-                      (window.location.href.indexOf("/admin/add") !== -1
+                      (window.location.href.indexOf(`/patient/${id}/settings`) !== -1
                         ? "opacity-75"
                         : "text-blueGray-300")
                     }
                   ></i>{" "}
-                  Add Patient
+                  Assign Bill for Claim
                 </Link>
               </li>
 
-              <li className="items-center">
+              {/* <li className="items-center">
                 <Link
                   className={
                     "text-xs uppercase py-3 font-bold block " +
-                    (window.location.href.indexOf("/admin/view") !== -1
+                    (window.location.href.indexOf("/admin/tables") !== -1
                       ? "text-lightBlue-500 hover:text-lightBlue-600"
                       : "text-blueGray-700 hover:text-blueGray-500")
                   }
-                  to="/admin/view"
+                  to="/admin/tables"
                 >
                   <i
                     className={
                       "fas fa-table mr-2 text-sm " +
-                      (window.location.href.indexOf("/admin/view") !== -1
+                      (window.location.href.indexOf("/admin/tables") !== -1
                         ? "opacity-75"
                         : "text-blueGray-300")
                     }
                   ></i>{" "}
                   View Patient Details
                 </Link>
-              </li>
+              </li> */}
             </ul>
 
             {/* Divider */}

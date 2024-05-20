@@ -1237,4 +1237,16 @@ export async function getAllPatientsByHospital(_hospitalId){
 }
 
 
-
+export async function getAllMedicalBillByPatientId(_patientId){
+  try {
+    const web3 = await initWeb3();
+    const contract = new web3.eth.Contract(contractABI, contractAddress);
+    const records = await contract.methods.getAllMedicalBillByPatientId(_patientId).call();
+    console.log(records);
+    return records;
+    
+  } catch (error) {
+    console.error('Error fetching all medical records:', error);
+    throw error;
+  }
+}

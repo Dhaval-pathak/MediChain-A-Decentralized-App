@@ -24,3 +24,14 @@ export async function loginUser(userData) {
     throw error; 
   }
 }
+
+export async function getInsuranceCompanies(){
+  try {
+    const response = await axios.get('http://localhost:3001/api/insuranceCompanies');
+    console.log(response)
+    return response.data; 
+  } catch (error) {
+    console.error('Error fetching insurance companies:', error);
+    throw error; 
+  }
+}
