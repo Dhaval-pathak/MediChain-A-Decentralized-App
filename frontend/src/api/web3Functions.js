@@ -733,6 +733,11 @@ const contractABI = [
             "internalType": "uint256",
             "name": "approvedTimestamp",
             "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "preAuthId",
+            "type": "uint256"
           }
         ],
         "internalType": "struct Cashless.Preauthorization[]",
@@ -1137,11 +1142,13 @@ const contractABI = [
     "constant": true
   }
 ];
-const contractAddress = '0x619f1Ad9D48B07Ec3DC0d9Cf15CDC0702377EA59';
+
+const contractAddress = '0xA68159Ea70f9D6931d9F2Dcf06900d7ffEE68621';
+
 
 
 export async function createMedicalBillOnChain(patientId, details, amount, hospitalId) {
-  const web3 = await initWeb3(); 
+  const web3 = await initWeb3();
   const accounts = await web3.eth.getAccounts();
   const contract = new web3.eth.Contract(contractABI, contractAddress);
 
@@ -1157,7 +1164,6 @@ export async function registerHospital(hospitalName, doctorList) {
   const accounts = await web3.eth.getAccounts();
   const contract = new web3.eth.Contract(contractABI, contractAddress);
   const doctorListArray = Array.isArray(doctorList) ? doctorList : [doctorList];
-  console.log(doctorListArray)
 
   await contract.methods.registerHospital(hospitalName, doctorListArray).send({ from: accounts[0] });
 }
@@ -1167,26 +1173,33 @@ export async function registerInsuranceCompany(networkHospitals, details) {
   const web3 = await initWeb3();
   const accounts = await web3.eth.getAccounts();
   const contract = new web3.eth.Contract(contractABI, contractAddress);
+  const networkHospitalsarray = Array.isArray(networkHospitals) ? networkHospitals : [networkHospitals];
 
-  await contract.methods.registerInsuranceCompany(networkHospitals, details).send({ from: accounts[0] });
+
+  await contract.methods.registerInsuranceCompany(networkHospitalsarray, details).send({ from: accounts[0] });
 }
 
 // Policy Registration
 export async function createPolicy(
   description,
+  // insuranceCompanyAddress,
   isPolicyCashless,
   isPolicyReimbursement,
   sumAssured,
-  deductible,
-  copayment,
-  noncoveredExpense,
-  sublimit
+  deductibleAnnual,
+  deductiblePerInstance,
+  copaymentFixedCharge,
+  copaymentPercentageCharge,
+  noncoveredExpenseFacelift,
+  noncoveredExpenseHairTransplant,
+  noncoveredExpenseAlternativeTherapy,
+  sublimitRoomRentLimit,
+  sublimitSurgeryLimit
 ) {
   const web3 = await initWeb3();
   const accounts = await web3.eth.getAccounts();
   const contract = new web3.eth.Contract(contractABI, contractAddress);
   const insuranceCompanyAddress = accounts[0];
-
   await contract.methods
     .createPolicy(
       description,
@@ -1194,10 +1207,14 @@ export async function createPolicy(
       isPolicyCashless,
       isPolicyReimbursement,
       sumAssured,
-      deductible,
-      copayment,
-      noncoveredExpense,
-      sublimit
+      { annual: deductibleAnnual, perInstance: deductiblePerInstance },
+      { fixedCharge: copaymentFixedCharge, percentageCharge: copaymentPercentageCharge },
+      {
+        facelift: noncoveredExpenseFacelift,
+        hairTransplant: noncoveredExpenseHairTransplant,
+        alternativeTherapy: noncoveredExpenseAlternativeTherapy,
+      },
+      { roomRentLimit: sublimitRoomRentLimit, surgeryLimit: sublimitSurgeryLimit }
     )
     .send({ from: accounts[0] });
 }
@@ -1223,21 +1240,21 @@ export async function assignInsurancePolicy(patientId, insuranceCompany, policyI
 
 
 
-export async function getAllPatientsByHospital(_hospitalId){
+export async function getAllPatientsByHospital(_hospitalId) {
   try {
     const web3 = await initWeb3();
     const contract = new web3.eth.Contract(contractABI, contractAddress);
     const records = await contract.methods.getAllPatientsByHospital(_hospitalId).call();
     console.log(records);
     return records;
-} catch (error) {
-    console.error('Error fetching all medical records:', error);
+  } catch (error) {
+    console.error('Error fetching All Patients By Hospital:', error);
     throw error;
-}
+  }
 }
 
 
-export async function getAllMedicalBillByPatientId(_patientId){
+export async function getAllMedicalBillByPatientId(_patientId) {
   try {
     const web3 = await initWeb3();
     const contract = new web3.eth.Contract(contractABI, contractAddress);
@@ -1245,12 +1262,13 @@ export async function getAllMedicalBillByPatientId(_patientId){
     const records = await contract.methods.getAllMedicalBillByPatientId(_patientId).call(accounts[0]);
     console.log(records);
     return records;
-    
+
   } catch (error) {
     console.error('Error fetching all medical records:', error);
     throw error;
   }
 }
+
 
 export async function assignInsuranceCompanyForMedicalBill(_patientId, _billId, _insuranceCompany){
   const web3 = await initWeb3();
@@ -1258,4 +1276,118 @@ export async function assignInsuranceCompanyForMedicalBill(_patientId, _billId, 
   const contract = new web3.eth.Contract(contractABI, contractAddress);
 
   await contract.methods.assignInsuranceCompanyForMedicalBill(_patientId, _billId, _insuranceCompany).send({ from: accounts[0] });
+
+}
+
+export const getAllPoliciesByInsuranceCompany = async () => {
+  try {
+    const web3 = await initWeb3();
+    const accounts = await web3.eth.getAccounts();
+    const contract = new web3.eth.Contract(contractABI, contractAddress);
+    const insuranceCompanyAddress = accounts[0];
+
+    const policies = await contract.methods.getPoliciesByInsuranceCompany(insuranceCompanyAddress).call({ from: accounts[0] });
+
+    return policies;
+  } catch (error) {
+    console.error('Error fetching policies:', error);
+    return [];
+  }
+};
+
+
+export async function getPreauthorizationRequestsByInsuranceCompany() {
+  try {
+    const web3 = await initWeb3();
+    const contract = new web3.eth.Contract(contractABI, contractAddress);
+    const accounts = await web3.eth.getAccounts();
+    const _insuranceCompanyAddress = accounts[0];
+    console.log(accounts)
+    const records = await contract.methods.getPreauthorizationRequestsByInsuranceCompany(_insuranceCompanyAddress).call();
+    return records;
+
+  } catch (error) {
+    console.error('Error fetching Preauthorization Requests:', error);
+    throw error;
+  }
+}
+
+
+
+export const approvePreauthorization = async (_preauthorizationId) => {
+  try {
+    const web3 = await initWeb3();
+    const accounts = await web3.eth.getAccounts();
+    const contract = new web3.eth.Contract(contractABI, contractAddress);
+
+    await contract.methods.approvePreauthorization(_preauthorizationId).send({ from: accounts[0] });
+
+  } catch (error) {
+    console.error('Error Approving Preauthorization:', error);
+    return [];
+  }
+};
+
+
+export const rejectPreauthorization = async (_preauthorizationId) => {
+  try {
+    const web3 = await initWeb3();
+    const accounts = await web3.eth.getAccounts();
+    const contract = new web3.eth.Contract(contractABI, contractAddress);
+
+    await contract.methods.rejectPreauthorization(_preauthorizationId).send({ from: accounts[0] });
+
+  } catch (error) {
+    console.error('Error Rejecting Authorization:', error);
+    return [];
+  }
+};
+
+export async function requestPreauthorization(_patientId,
+  _billId) {
+  try {
+    const web3 = await initWeb3();
+    const contract = new web3.eth.Contract(contractABI, contractAddress);
+    const accounts = await web3.eth.getAccounts();
+    await contract.methods.requestPreauthorization(_patientId, _billId).send({ from: accounts[0] });
+
+  } catch (error) {
+    console.error('Error requesting Preauthorization:', error);
+    throw error;
+  }
+}
+
+
+export async function calculateFinalAmount(_preauthorizationId) {
+  try {
+    const web3 = await initWeb3();
+    const contract = new web3.eth.Contract(contractABI, contractAddress);
+    const requests = await getPreauthorizationRequestsByInsuranceCompany();
+    const finalAmounts = [];
+
+    for (const preauth of requests) {
+      if (Number(preauth.isPreauthorized) === 1) {
+        const patientId = Number(preauth[0]);
+        const billId = Number(preauth[1]);
+        const policyId = Number(preauth[3]);
+        const preauthorizationId = _preauthorizationId; 
+        const paymentType = 0; 
+
+        const finalAmount = await contract.methods
+          .calculateFinalAmount(patientId, billId, policyId, preauthorizationId, paymentType)
+          .call();
+// console.log(finalAmount)
+        finalAmounts.push({
+          requestTimestamp: preauth[5],
+          finalAmount,
+        });
+      }
+    }
+
+    return finalAmounts;
+  } catch (error) {
+    console.error('Error in calculating Final Amount:', error);
+    throw error;
+  }
+
 }

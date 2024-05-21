@@ -13,6 +13,7 @@ contract Cashless is MainStructure{
         PreauthorizationStatus isPreauthorized; 
         uint256 requestTimestamp;
         uint256 approvedTimestamp;
+        uint256 preAuthId;
     }
     mapping(uint256 => Preauthorization)  preauthorizations;
     enum PreauthorizationStatus{ PENDING, APPROVED,REJECTED }
@@ -34,7 +35,8 @@ contract Cashless is MainStructure{
             policyId,
             PreauthorizationStatus.PENDING,
             block.timestamp,
-            0
+            0,
+            preauthorizationCount
         );
         emit PreauthorizationRequested(preauthorizationCount, _patientId, policyId, _billId );
     }

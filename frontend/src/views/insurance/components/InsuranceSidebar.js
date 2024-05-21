@@ -128,27 +128,49 @@ export default function InsuranceSidebar() {
                 </Link>
               </li>
 
-              {/* <li className="items-center">
+              <li className="items-center">
                 <Link
                   className={
                     "text-xs uppercase py-3 font-bold block " +
-                    (window.location.href.indexOf("/admin/tables") !== -1
+                    (window.location.href.indexOf("/insurance/viewpolicy") !== -1
                       ? "text-lightBlue-500 hover:text-lightBlue-600"
                       : "text-blueGray-700 hover:text-blueGray-500")
                   }
-                  to="/admin/tables"
+                  to="/insurance/viewpolicy"
                 >
                   <i
                     className={
                       "fas fa-table mr-2 text-sm " +
-                      (window.location.href.indexOf("/admin/tables") !== -1
+                      (window.location.href.indexOf("/insurance/viewpolicy") !== -1
                         ? "opacity-75"
                         : "text-blueGray-300")
                     }
                   ></i>{" "}
-                  View Patient Details
+                  View Live policy
                 </Link>
-              </li> */}
+              </li>
+              
+              <li className="items-center">
+                <Link
+                  className={
+                    "text-xs uppercase py-3 font-bold block " +
+                    (window.location.href.indexOf("/insurance/PreAuth") !== -1
+                      ? "text-lightBlue-500 hover:text-lightBlue-600"
+                      : "text-blueGray-700 hover:text-blueGray-500")
+                  }
+                  to="/insurance/PreAuth"
+                >
+                  <i
+                    className={
+                      "fa fa-key mr-2 text-sm " +
+                      (window.location.href.indexOf("/insurance/PreAuth") !== -1
+                        ? "opacity-75"
+                        : "text-blueGray-300")
+                    }
+                  ></i>{" "}
+                  Preauthorization Request
+                </Link>
+              </li>
             </ul>
 
             {/* Divider */}

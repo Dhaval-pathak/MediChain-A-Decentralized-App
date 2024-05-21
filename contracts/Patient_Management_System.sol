@@ -8,7 +8,7 @@ import {Cashless} from "./Cashless.sol";
 import {Reimbursement} from "./Reimbursement.sol";
 
 contract PatientManagementSystem is Cashless, Reimbursement{
-    enum PaymentType { CASHLESS, REIMBURSEMENT, SELFPAY }
+    enum PaymentType { CASHLESS, REIMBURSEMENT }
 
     function calculateFinalAmount(
         uint256 _patientId,

@@ -7,16 +7,41 @@ export default function CreatePolicy() {
     isPolicyCashless: false,
     isPolicyReimbursement: false,
     sumAssured: 0,
-    deductible: 0,
-    copayment: 0,
-    noncoveredExpense: 0,
-    sublimit: 0,
+    deductible: {
+      annual: 0,
+      perInstance: 0,
+    },
+    copayment: {
+      fixedCharge: 0,
+      percentageCharge: 0,
+    },
+    noncoveredExpense: {
+      facelift: false,
+      hairTransplant: false,
+      alternativeTherapy: false,
+    },
+    sublimit: {
+      roomRentLimit: 0,
+      surgeryLimit: 0,
+    },
   });
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     const updatedValue = type === "checkbox" ? checked : value;
-    setFormData({ ...formData, [name]: updatedValue });
+
+    if (name.includes(".")) {
+      const [parentName, childName] = name.split(".");
+      setFormData({
+        ...formData,
+        [parentName]: {
+          ...formData[parentName],
+          [childName]: updatedValue,
+        },
+      });
+    } else {
+      setFormData({ ...formData, [name]: updatedValue });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -24,27 +49,19 @@ export default function CreatePolicy() {
     try {
       await createPolicy(
         formData.description,
-        formData.insuranceCompany,
+        // formData.insuranceCompany,
         formData.isPolicyCashless,
         formData.isPolicyReimbursement,
         formData.sumAssured,
-        {
-          annual: formData.deductible,
-          perInstance: 0, // Assuming you don't have a separate value for perInstance deductible
-        },
-        {
-          fixedCharge: formData.copayment,
-          percentageCharge: 0, // Assuming you don't have a separate value for percentageCharge
-        },
-        {
-          facelift: false,
-          hairTransplant: false, // Assuming you don't have separate values for these
-          alternativeTherapy: false,
-        },
-        {
-          roomRentLimit: formData.sublimit,
-          surgeryLimit: 0, // Assuming you don't have a separate value for surgeryLimit
-        }
+        formData.deductible.annual,
+        formData.deductible.perInstance,
+        formData.copayment.fixedCharge,
+        formData.copayment.percentageCharge,
+        formData.noncoveredExpense.facelift,
+        formData.noncoveredExpense.hairTransplant,
+        formData.noncoveredExpense.alternativeTherapy,
+        formData.sublimit.roomRentLimit,
+        formData.sublimit.surgeryLimit
       );
       console.log("Policy created successfully");
       // Reset form data or perform any additional actions
@@ -52,7 +69,6 @@ export default function CreatePolicy() {
       console.error(error);
     }
   };
-
   return (
     <>
       <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
@@ -73,7 +89,7 @@ export default function CreatePolicy() {
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    Description
+                    Description/Name
                   </label>
                   <input
                     type="text"
@@ -90,13 +106,13 @@ export default function CreatePolicy() {
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    Insurance Company
+                   sum Assured
                   </label>
                   <input
                     type="text"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    name="insuranceCompany"
-                    value={formData.insuranceCompany}
+                    name="sumAssured"
+                    value={formData.sumAssured}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -135,19 +151,29 @@ export default function CreatePolicy() {
                   />
                 </div>
               </div>
+
+
+            </div>
+
+
+
+            <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
+              Deductible
+            </h6>
+            <div className="flex flex-wrap">
               <div className="w-full lg:w-6/12 px-4">
                 <div className="relative w-full mb-3">
                   <label
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    Sum Assured
+                    Annual Deductible
                   </label>
                   <input
                     type="number"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    name="sumAssured"
-                    value={formData.sumAssured}
+                    name="deductible.annual"
+                    value={formData.deductible.annual}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -158,69 +184,162 @@ export default function CreatePolicy() {
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    Deductible
+                    Per Instance Deductible
                   </label>
                   <input
                     type="number"
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    name="deductible"
-                    value={formData.deductible}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
-              <div className="w-full lg:w-6/12 px-4">
-                <div className="relative w-full mb-3">
-                  <label
-                    className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                    htmlFor="grid-password"
-                  >
-                    Copayment
-                  </label>
-                  <input
-                    type="number"
-                    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    name="copayment"
-                    value={formData.copayment}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
-              <div className="w-full lg:w-6/12 px-4">
-                <div className="relative w-full mb-3">
-                  <label
-                    className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                    htmlFor="grid-password"
-                  >
-                    Non-covered Expense
-                  </label>
-                  <input
-                    type="number"
-                    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    name="noncoveredExpense"
-                    value={formData.noncoveredExpense}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
-              <div className="w-full lg:w-6/12 px-4">
-                <div className="relative w-full mb-3">
-                  <label
-                    className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                    htmlFor="grid-password"
-                  >
-                    Sublimit
-                  </label>
-                  <input
-                    type="number"
-                    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    name="sublimit"
-                    value={formData.sublimit}
+                    name="deductible.perInstance"
+                    value={formData.deductible.perInstance}
                     onChange={handleInputChange}
                   />
                 </div>
               </div>
             </div>
+
+
+
+            <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
+              Copayment
+            </h6>
+            <div className="flex flex-wrap">
+              <div className="w-full lg:w-6/12 px-4">
+                <div className="relative w-full mb-3">
+                  <label
+                    className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                    htmlFor="grid-password"
+                  >
+                    Fixed Charge
+                  </label>
+                  <input
+                    type="number"
+                    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                    name="copayment.fixedCharge"
+                    value={formData.copayment.fixedCharge}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+              <div className="w-full lg:w-6/12 px-4">
+                <div className="relative w-full mb-3">
+                  <label
+                    className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                    htmlFor="grid-password"
+                  >
+                    Percentage Charge
+                  </label>
+                  <input
+                    type="number"
+                    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                    name="copayment.percentageCharge"
+                    value={formData.copayment.percentageCharge}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+            </div>
+
+
+
+            <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
+              Non-covered Expense
+            </h6>
+            <div className="flex flex-wrap">
+              <div className="w-full lg:w-4/12 px-4">
+                <div className="relative w-full mb-3">
+                  <label
+                    className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                    htmlFor="grid-password"
+                  >
+                    Facelift
+                  </label>
+                  <input
+                    type="checkbox"
+                    className="form-checkbox h-5 w-5 text-blueGray-600"
+                    name="noncoveredExpense.facelift"
+                    checked={formData.noncoveredExpense.facelift}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+              <div className="w-full lg:w-4/12 px-4">
+                <div className="relative w-full mb-3">
+                  <label
+                    className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                    htmlFor="grid-password"
+                  >
+                    Hair Transplant
+                  </label>
+                  <input
+                    type="checkbox"
+                    className="form-checkbox h-5 w-5 text-blueGray-600"
+                    name="noncoveredExpense.hairTransplant"
+                    checked={formData.noncoveredExpense.hairTransplant}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+              <div className="w-full lg:w-4/12 px-4">
+                <div className="relative w-full mb-3">
+                  <label
+                    className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                    htmlFor="grid-password"
+                  >
+                    Alternative Therapy
+                  </label>
+                  <input
+                    type="checkbox"
+                    className="form-checkbox h-5 w-5 text-blueGray-600"
+                    name="noncoveredExpense.alternativeTherapy"
+                    checked={formData.noncoveredExpense.alternativeTherapy}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+            </div>
+
+
+            <h6 className="text-blueGray-400 text-sm mt-3 mb-6 font-bold uppercase">
+              sublimit
+            </h6>
+            <div className="flex flex-wrap">
+              <div className="w-full lg:w-6/12 px-4">
+                <div className="relative w-full mb-3">
+                  <label
+                    className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                    htmlFor="grid-password"
+                  >
+                    room Rent Limit
+                  </label>
+                  <input
+                    type="number"
+                    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                    name="sublimit.roomRentLimit"
+                    value={formData.sublimit.roomRentLimit}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+              <div className="w-full lg:w-6/12 px-4">
+                <div className="relative w-full mb-3">
+                  <label
+                    className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                    htmlFor="grid-password"
+                  >
+                    surgery Limit
+                  </label>
+                  <input
+                    type="number"
+                    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                    name="sublimit.surgeryLimit"
+                    value={formData.sublimit.surgeryLimit}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+            </div>
+
+
             <div className="flex justify-end">
               <button
                 type="submit"
