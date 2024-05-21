@@ -3,7 +3,6 @@ import React from "react";
 // components
 
 
-import CardPageVisits from "components/Cards/CardPageVisits.js";
 import CardTable from "./components/CardTable";
 import CardSocialTraffic from "components/Cards/CardSocialTraffic.js";
 

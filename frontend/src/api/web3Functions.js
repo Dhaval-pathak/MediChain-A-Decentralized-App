@@ -1137,7 +1137,7 @@ const contractABI = [
     "constant": true
   }
 ];
-const contractAddress = '0x45c2Dac0efF76aC67b16E761795ecd3B12f11465';
+const contractAddress = '0x619f1Ad9D48B07Ec3DC0d9Cf15CDC0702377EA59';
 
 
 export async function createMedicalBillOnChain(patientId, details, amount, hospitalId) {
@@ -1159,7 +1159,7 @@ export async function registerHospital(hospitalName, doctorList) {
   const doctorListArray = Array.isArray(doctorList) ? doctorList : [doctorList];
   console.log(doctorListArray)
 
-  await contract.methods.registerInsuranceCompany(hospitalName, doctorListArray).send({ from: accounts[0] });
+  await contract.methods.registerHospital(hospitalName, doctorListArray).send({ from: accounts[0] });
 }
 
 // Insurance Company Registration
@@ -1241,7 +1241,8 @@ export async function getAllMedicalBillByPatientId(_patientId){
   try {
     const web3 = await initWeb3();
     const contract = new web3.eth.Contract(contractABI, contractAddress);
-    const records = await contract.methods.getAllMedicalBillByPatientId(_patientId).call();
+    const accounts = await web3.eth.getAccounts();
+    const records = await contract.methods.getAllMedicalBillByPatientId(_patientId).call(accounts[0]);
     console.log(records);
     return records;
     
@@ -1249,4 +1250,12 @@ export async function getAllMedicalBillByPatientId(_patientId){
     console.error('Error fetching all medical records:', error);
     throw error;
   }
+}
+
+export async function assignInsuranceCompanyForMedicalBill(_patientId, _billId, _insuranceCompany){
+  const web3 = await initWeb3();
+  const accounts = await web3.eth.getAccounts();
+  const contract = new web3.eth.Contract(contractABI, contractAddress);
+
+  await contract.methods.assignInsuranceCompanyForMedicalBill(_patientId, _billId, _insuranceCompany).send({ from: accounts[0] });
 }

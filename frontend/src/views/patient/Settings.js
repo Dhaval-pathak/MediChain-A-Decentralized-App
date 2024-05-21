@@ -1,4 +1,4 @@
-import { getAllMedicalBillByPatientId } from "api/web3Functions";
+import { getAllMedicalBillByPatientId ,  assignInsuranceCompanyForMedicalBill} from "api/web3Functions";
 import {React,useState, useEffect} from "react";
 import { useParams } from "react-router-dom/cjs/react-router-dom";
 import PropTypes from "prop-types";
@@ -9,10 +9,12 @@ import { getInsuranceCompanies } from "api/apiFunctions";
 
 
 export default function Settings({color}) {
-  const {id} = useParams();
   const [patientRecords, setPatientRecords] = useState([]);
   const [insuranceCompanies, setInsuranceCompanies] = useState([])
   const [selectedCompanies, setSelectedCompanies] = useState({});
+  const id = 1;
+
+
 
   useEffect(() => {
     const fetchPatientRecords = async () => {
@@ -40,17 +42,21 @@ export default function Settings({color}) {
   }, []);
 
   const handleCompanyChange = (recordId, companyId) => {
+    console.log(companyId)
     setSelectedCompanies((prevSelectedCompanies) => ({
       ...prevSelectedCompanies,
       [recordId]: companyId,
     }));
   };
 
-  const handleConfirm = (recordId) => {
-    const selectedCompany = selectedCompanies[recordId];
-    if (selectedCompany) {
-      console.log(`Confirmed company ${selectedCompany} for record ${recordId}`);
-      // Here you would handle the confirmation action, e.g., save the selection to the database
+  const handleConfirm = async (recordId) => {
+    
+    try {
+      const selectedCompany = selectedCompanies[recordId];
+      console.log(selectedCompany)
+      await assignInsuranceCompanyForMedicalBill(id , 1, selectedCompany )
+    } catch (error) {
+      
     }
   };
 
@@ -137,27 +143,14 @@ export default function Settings({color}) {
             <tbody>
               {patientRecords.map((record, index) => (
                 <tr key={index}>
-                  <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
-                    <img
-                      src={require("assets/img/avatar.png")}
-                      className="h-12 w-12 bg-white rounded-full border"
-                      alt="..."
-                    ></img>{" "}
-                    <span
-                      className={
-                        "ml-3 font-bold " +
-                        (color === "light" ? "text-blueGray-600" : "text-white")
-                      }
-                    >
-                      {record[0]}
-                    </span>
-                  </th>
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                    {Number(record[1])}
+                  </td>
+                  
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                     {record[3]}
                   </td>
-                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                    <i className="fas fa-circle text-orange-500 mr-2"></i>
-                  </td>
+                  
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                     {Number(record[6])}
                   </td>
@@ -182,7 +175,7 @@ export default function Settings({color}) {
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                     <button
                       onClick={() => handleConfirm(record[0])}
-                      className="bg-blue-500 text-white px-3 py-1 rounded"
+                      className="bg-white text-black px-3 py-1 rounded border-2"
                     >
                       Confirm
                     </button>

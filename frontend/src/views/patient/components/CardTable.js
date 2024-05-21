@@ -11,7 +11,7 @@ export default function CardTable({ color }) {
   useEffect(() => {
     const fetchPatientRecords = async () => {
       try {
-        const records = await getAllMedicalBillByPatientId(id);
+        const records = await getAllMedicalBillByPatientId(1);
         console.log(records)
         setPatientRecords(records);
       } catch (error) {
@@ -86,27 +86,16 @@ export default function CardTable({ color }) {
             <tbody>
             {patientRecords.map((record, index) => (
                 <tr key={index}>
-                  <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
-                  <img
-                    src={require("assets/img/avatar.png")}
-                    className="h-12 w-12 bg-white rounded-full border"
-                    alt="..."
-                  ></img>{" "}
-                    <span
-                      className={
-                        "ml-3 font-bold " +
-                        +(color === "light" ? "text-blueGray-600" : "text-white")
-                      }
-                    >
-                      {record[0]} 
-                    </span>
-                  </th>
+                  
+                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  {Number(record[1])} 
+                  </td>
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   {record[3]} 
                   </td>
-                  <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                  {/* <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   <i className="fas fa-circle text-orange-500 mr-2"></i> 
-                 </td>
+                 </td> */}
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                     {Number(record[6])}
                   </td>
