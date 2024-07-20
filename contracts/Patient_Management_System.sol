@@ -60,7 +60,14 @@ contract PatientManagementSystem is Cashless, Reimbursement{
             return 0;
         }
 
-        return claimableAmount;
+        if(claimableAmount>20000){
+            return 10000;
+        }
+        else{
+            return claimableAmount;
+        }
+
+        
     }        
 
  

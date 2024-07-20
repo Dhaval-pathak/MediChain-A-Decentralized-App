@@ -1,4 +1,4 @@
-import { getAllMedicalBillByPatientId ,  assignInsuranceCompanyForMedicalBill} from "api/web3Functions";
+import { getAllMedicalBillByPatientId ,  assignInsuranceCompanyForMedicalBill,assignInsurancePolicy,requestPreauthorization} from "api/web3Functions";
 import {React,useState, useEffect} from "react";
 import { useParams } from "react-router-dom/cjs/react-router-dom";
 import PropTypes from "prop-types";
@@ -54,11 +54,19 @@ export default function Settings({color}) {
     try {
       const selectedCompany = selectedCompanies[recordId];
       console.log(selectedCompany)
+      await assignInsurancePolicy(1,"0x6af5c5113C004FB8D474939CB9D66C4c0CC5750f",1);
       await assignInsuranceCompanyForMedicalBill(id , 1, selectedCompany )
+      await requestPreauthorization(1,1);
     } catch (error) {
       
     }
   };
+
+  const checkDisable=(record)=>{
+    if (record[2] == "0x0000000000000000000000000000000000000000") {
+      return false;
+    }else return true;
+  }
 
   
   return (
@@ -174,10 +182,11 @@ export default function Settings({color}) {
                   </td>
                   <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                     <button
+                      disabled = {checkDisable(record)}
                       onClick={() => handleConfirm(record[0])}
                       className="bg-white text-black px-3 py-1 rounded border-2"
                     >
-                      Confirm
+                      {checkDisable(record)?"Already Register":"Confirm"} 
                     </button>
                   </td>
                 </tr>

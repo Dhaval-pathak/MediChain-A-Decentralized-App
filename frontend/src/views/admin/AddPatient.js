@@ -1,5 +1,5 @@
 import {React,useState} from "react";
-import {registerPatient} from "../../api/web3Functions"
+import {registerPatient,registerHospital} from "../../api/web3Functions"
 
 // components
 

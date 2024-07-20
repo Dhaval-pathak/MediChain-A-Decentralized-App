@@ -1,6 +1,6 @@
 import {React,useEffect,useState} from "react";
 import PropTypes from "prop-types";
-import {getAllPatientsByHospital} from "../../../api/web3Functions"
+import {getAllPatientsByHospital,registerHospital} from "../../../api/web3Functions"
 
 
 // components
@@ -13,6 +13,7 @@ export default function CardTable({ color }) {
   useEffect(() => {
     const fetchPatientRecords = async () => {
       try {
+        // await registerHospital("max",["hemant"]);
         const records = await getAllPatientsByHospital(1);
         console.log(records)
         setPatientRecords(records);
